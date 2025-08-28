@@ -9,6 +9,7 @@ import Clients from "./pages/Clients";
 import Contract from "./pages/Contract";
 import ContractsPage from "./pages/ContractsGet";
 import ContractDetails from "./pages/SingleContract";
+import HomePage from "./pages/HomePage";
 
 const router = createBrowserRouter([
   {
@@ -16,7 +17,7 @@ const router = createBrowserRouter([
     element: (
       <>
         <Header />
-        <Dashboard />
+        <HomePage />
       </>
     ),
   },
@@ -25,6 +26,7 @@ const router = createBrowserRouter([
     element: (
       <>
         <Header />
+        <Dashboard />
         <AssetPage />
       </>
     ),

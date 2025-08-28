@@ -42,9 +42,7 @@ const AssetTable: React.FC = () => {
   const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null);
   return (
     <div className="container mx-auto px-4 py-6">
-      <h2 className="text-2xl font-bold text-amber-900 mb-4">
-        Asset Status Overview
-      </h2>
+      <h2 className="text-2xl font-bold text-amber-900 mb-4">Asset Metrics</h2>
       <div className="overflow-x-auto shadow-lg rounded-xl border border-gray-200">
         <table className="min-w-full divide-y divide-gray-200 text-sm">
           <thead className="bg-amber-100">

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import api from "../api/axios";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router";
 
 interface Client {
   clientId: string;
@@ -52,7 +53,7 @@ export default function ContractsPage() {
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
-
+  const navigate = useNavigate();
   useEffect(() => {
     fetchContracts();
   }, [page]);
@@ -81,7 +82,13 @@ export default function ContractsPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {contracts.map((contract) => (
-            <Card key={contract.contractId} className="shadow-md">
+            <Card
+              key={contract.contractId}
+              className="shadow-md cursor-pointer hover:shadow-lg transition"
+              onClick={() => {
+                navigate(`/contract/${contract.contractId}`);
+              }}
+            >
               <CardHeader>
                 <CardTitle>
                   Contract #{contract.contractId} — {contract.siteId}

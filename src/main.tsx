@@ -7,6 +7,8 @@ import Header from "./components/Header";
 import AssetPage from "./pages/AssetPage";
 import Clients from "./pages/Clients";
 import Contract from "./pages/Contract";
+import ContractsPage from "./pages/ContractsGet";
+import ContractDetails from "./pages/SingleContract";
 
 const router = createBrowserRouter([
   {
@@ -36,13 +38,30 @@ const router = createBrowserRouter([
       </>
     ),
   },
-
   {
     path: "/contracts",
     element: (
       <>
         <Header />
+        <ContractsPage />
+      </>
+    ),
+  },
+  {
+    path: "/contracts/create",
+    element: (
+      <>
+        <Header />
         <Contract />
+      </>
+    ),
+  },
+  {
+    path: "/contract/:id",
+    element: (
+      <>
+        <Header />
+        <ContractDetails />
       </>
     ),
   },

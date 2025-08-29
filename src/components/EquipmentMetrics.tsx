@@ -10,6 +10,8 @@ interface EquipmentMetricsProps {
     totalRuntimeHours: number;
     totalIdleHours: number;
     totalFuelUsage: number;
+    avgFuelBurnRate: number;
+    distanceTraveled: number;
   };
   onBack: () => void;
 }
@@ -219,6 +221,18 @@ export default function EquipmentMetrics({
               <p className="text-amber-600 text-sm">Availability Rate</p>
               <p className="text-xl font-bold text-amber-800">
                 {availabilityRate}%
+              </p>
+            </div>
+            <div className="p-4 bg-amber-50 rounded-lg">
+              <p className="text-amber-600 text-sm">Average Fuel Burn Rate</p>
+              <p className="text-xl font-bold text-amber-800">
+                {equipment.avgFuelBurnRate} L/hour
+              </p>
+            </div>
+            <div className="p-4 bg-amber-50 rounded-lg">
+              <p className="text-amber-600 text-sm">Distance Traveled</p>
+              <p className="text-xl font-bold text-amber-800">
+                {equipment.distanceTraveled} km
               </p>
             </div>
           </div>

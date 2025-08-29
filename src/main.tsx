@@ -10,6 +10,8 @@ import Contract from "./pages/Contract";
 import ContractsPage from "./pages/ContractsGet";
 import ContractDetails from "./pages/SingleContract";
 import HomePage from "./pages/HomePage";
+import DemandForecasting from "./pages/Demand";
+import AnomalyDashboard from "./pages/Anomaly";
 
 const router = createBrowserRouter([
   {
@@ -64,6 +66,24 @@ const router = createBrowserRouter([
       <>
         <Header />
         <ContractDetails />
+      </>
+    ),
+  },
+  {
+    path: "/demand",
+    element: (
+      <>
+        <Header />
+        <DemandForecasting />
+      </>
+    ),
+  },
+  {
+    path: "/anomalies",
+    element: (
+      <>
+        <Header />
+        <AnomalyDashboard />
       </>
     ),
   },

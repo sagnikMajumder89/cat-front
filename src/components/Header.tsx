@@ -17,10 +17,13 @@ const Header: React.FC = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center space-x-2">
-            <div className="w-10 h-10 rounded-lg bg-amber-500 flex items-center justify-center">
-              <i className="fas fa-hard-hat text-white text-xl"></i>
-            </div>
-            <h1 className="text-2xl font-bold text-amber-900">RentalTracker</h1>
+            <img
+              src="/logo.png"
+              alt="Logo"
+              className="w-12 h-12 object-contain rounded-full"
+            />
+
+            <h1 className="text-2xl font-bold text-amber-900">TrackerPillar</h1>
           </div>
 
           {/* Navigation */}
@@ -68,12 +71,19 @@ const Header: React.FC = () => {
               <NavigationMenuItem>
                 <NavigationMenuLink
                   className="px-3 py-2 text-amber-900 hover:text-amber-700 font-medium transition-colors"
-                  href="#"
+                  href="/demand"
                 >
-                  Reports
+                  Demand
                 </NavigationMenuLink>
               </NavigationMenuItem>
-
+              <NavigationMenuItem>
+                <NavigationMenuLink
+                  className="px-3 py-2 text-amber-900 hover:text-amber-700 font-medium transition-colors"
+                  href="/anomalies"
+                >
+                  Anomalies
+                </NavigationMenuLink>
+              </NavigationMenuItem>
               <NavigationMenuItem>
                 <NavigationMenuLink
                   className="px-3 py-2 text-amber-900 hover:text-amber-700 font-medium transition-colors"
@@ -87,9 +97,9 @@ const Header: React.FC = () => {
 
           {/* Right section */}
           <div className="flex items-center space-x-4">
-            <button className="p-2 rounded-full bg-amber-100 hover:bg-amber-300 transition-colors">
+            {/* <button className="p-2 rounded-full bg-amber-100 hover:bg-amber-300 transition-colors">
               <i className="fas fa-bell text-amber-800"></i>
-            </button>
+            </button> */}
             <div className="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center text-white font-medium">
               JS
             </div>

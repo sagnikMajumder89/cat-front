@@ -18,6 +18,8 @@ interface EquipmentAnalytics {
   totalRuntimeHours: number;
   totalIdleHours: number;
   totalFuelUsage: number;
+  avgFuelBurnRate: number;
+  distanceTraveled: number;
 }
 
 // Equipment type configuration with emojis

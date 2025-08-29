@@ -34,7 +34,7 @@ interface EquipmentCardProps {
 
 const EquipmentCard = ({ item, overdue }: EquipmentCardProps) => {
   const [loading, setLoading] = useState(false);
-
+  const [sendEmailLoading, setEmailLoading] = useState(false);
   const checkOut = async () => {
     try {
       setLoading(true);
@@ -89,6 +89,19 @@ const EquipmentCard = ({ item, overdue }: EquipmentCardProps) => {
     if (item.startDate && !item.endDate && !overdue) return "Checked Out";
     if (overdue) return "Overdue";
     return "Returned";
+  };
+
+  // /email/send-email-overdue
+  const sendOverdueEmail = async () => {
+    setEmailLoading(true);
+    try {
+      await api.get("/email/send-email-overdue");
+      toast.success("Overdue email sent successfully");
+    } catch (err) {
+      toast.error("Error sending overdue email");
+    } finally {
+      setEmailLoading(false);
+    }
   };
 
   return (
@@ -187,10 +200,17 @@ const EquipmentCard = ({ item, overdue }: EquipmentCardProps) => {
               <>
                 <Button
                   variant="destructive"
-                  className="w-full flex items-center gap-2"
+                  className="w-full flex items-center gap-2 cursor-pointer"
+                  onClick={sendOverdueEmail}
                 >
-                  <AlertTriangle className="h-4 w-4" />
-                  Notify Client (Overdue)
+                  {sendEmailLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <>
+                      <AlertTriangle className="h-4 w-4" />
+                      Notify Client (Overdue)
+                    </>
+                  )}
                 </Button>
                 <Button
                   variant="outline"

@@ -1,158 +1,208 @@
-import React from "react";
-import { motion } from "framer-motion";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  ResponsiveContainer,
-} from "recharts";
+import { X } from "lucide-react";
 
-interface Asset {
-  id: number;
-  type: string;
-  startDate: string;
-  endDate: string;
-  totalEngineHours: number;
-  downtimeHours: number;
-  fuelUsage: number;
-  operatingDays: number;
-  lastOperator: string;
+interface EquipmentMetric {
+  equipmentId: string;
+  status: string;
+  equipmentTypeId: string;
+  equipmentType: {
+    name: string;
+  };
+  lineItems: Array<{
+    lineItemId: string;
+    startDate: string;
+    endDate: string;
+    totalEngineHours: number | null;
+    fuelUsage: number | null;
+    downtimeHours: number | null;
+    operatingDays: number | null;
+    contractId: string;
+    equipmentId: string;
+    lastOperatorId: string;
+    usage: {
+      id: string;
+      totalEngineHours: number;
+      totalIdleHours: number;
+      fuelConsumed: number;
+      workingHours: number;
+      workingToIdleRatio: number;
+      fuelBurnRate: number;
+      distanceTraveled: number;
+      payloadMovedTonnes: number;
+      avgCycleTimeSeconds: number;
+      lineItemId: string;
+    } | null;
+  }>;
 }
 
-interface Props {
-  asset: Asset | null;
+interface AssetDetailsOverlayProps {
+  asset: EquipmentMetric;
   onClose: () => void;
 }
 
-const COLORS = ["#f59e0b", "#b45309", "#d97706"]; // amber shades
+const AssetDetailsOverlay: React.FC<AssetDetailsOverlayProps> = ({
+  asset,
+  onClose,
+}) => {
+  const activeLineItem = asset.lineItems.find((li) => li.usage !== null);
+  const usage = activeLineItem?.usage;
 
-const AssetDetailsOverlay: React.FC<Props> = ({ asset, onClose }) => {
-  if (!asset) return null;
-
-  const pieData = [
-    { name: "Downtime (hrs)", value: asset.downtimeHours },
-    { name: "Fuel Usage (L)", value: asset.fuelUsage },
-    { name: "Operating Days", value: asset.operatingDays },
-  ];
-
-  const barData = [
-    { name: "Engine Hours", value: asset.totalEngineHours },
-    { name: "Downtime", value: asset.downtimeHours },
-    { name: "Operating Days", value: asset.operatingDays },
-  ];
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
 
   return (
-    <motion.div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
-      <motion.div
-        className="bg-white rounded-xl shadow-lg p-6 max-w-4xl w-full overflow-y-auto max-h-[90vh]"
-        initial={{ y: 50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: 50, opacity: 0 }}
-      >
-        {/* Header */}
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-amber-900">
-            {asset.type} (ID: {asset.id})
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-amber-900">
+            Equipment Details
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-600 hover:text-amber-700 text-xl font-bold"
+            className="text-gray-500 hover:text-gray-700"
           >
-            ✕
+            <X className="h-6 w-6" />
           </button>
         </div>
 
-        {/* Info Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-          <div className="p-4 border rounded-lg bg-amber-50">
-            <p>
-              <span className="font-semibold">Start Date:</span>{" "}
-              {asset.startDate}
-            </p>
-            <p>
-              <span className="font-semibold">End Date:</span> {asset.endDate}
-            </p>
-            <p>
-              <span className="font-semibold">Last Operator:</span>{" "}
-              {asset.lastOperator}
-            </p>
-          </div>
-          <div className="p-4 border rounded-lg bg-amber-50">
-            <p>
-              <span className="font-semibold">Total Engine Hours:</span>{" "}
-              {asset.totalEngineHours}
-            </p>
-            <p>
-              <span className="font-semibold">Downtime Hours:</span>{" "}
-              {asset.downtimeHours}
-            </p>
-            <p>
-              <span className="font-semibold">Fuel Usage:</span>{" "}
-              {asset.fuelUsage} L
-            </p>
-            <p>
-              <span className="font-semibold">Operating Days:</span>{" "}
-              {asset.operatingDays}
-            </p>
-          </div>
-        </div>
-
-        {/* Charts Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Pie Chart */}
-          <div className="w-full h-64">
-            <h3 className="text-lg font-semibold text-amber-800 mb-2">
-              Resource Distribution
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div className="space-y-2">
+            <h3 className="text-lg font-semibold text-amber-800">
+              Basic Information
             </h3>
-            <ResponsiveContainer>
-              <PieChart>
-                <Pie
-                  data={pieData}
-                  dataKey="value"
-                  nameKey="name"
-                  outerRadius={80}
-                  fill="#f59e0b"
-                  label
-                >
-                  {pieData.map((_, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
+            <div className="space-y-1">
+              <p>
+                <span className="font-medium">Equipment ID:</span>{" "}
+                {asset.equipmentId}
+              </p>
+              <p>
+                <span className="font-medium">Type:</span>{" "}
+                {asset.equipmentType.name}
+              </p>
+              <p>
+                <span className="font-medium">Status:</span> {asset.status}
+              </p>
+              {activeLineItem && (
+                <>
+                  <p>
+                    <span className="font-medium">Contract ID:</span>{" "}
+                    {activeLineItem.contractId}
+                  </p>
+                  <p>
+                    <span className="font-medium">Line Item ID:</span>{" "}
+                    {activeLineItem.lineItemId}
+                  </p>
+                  <p>
+                    <span className="font-medium">Last Operator:</span>{" "}
+                    {activeLineItem.lastOperatorId}
+                  </p>
+                </>
+              )}
+            </div>
           </div>
 
-          {/* Bar Chart */}
-          <div className="w-full h-64">
-            <h3 className="text-lg font-semibold text-amber-800 mb-2">
-              Performance Metrics
-            </h3>
-            <ResponsiveContainer>
-              <BarChart data={barData}>
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="value" fill="#d97706" radius={[6, 6, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+          {activeLineItem && (
+            <div className="space-y-2">
+              <h3 className="text-lg font-semibold text-amber-800">
+                Rental Period
+              </h3>
+              <div className="space-y-1">
+                <p>
+                  <span className="font-medium">Start Date:</span>{" "}
+                  {formatDate(activeLineItem.startDate)}
+                </p>
+                <p>
+                  <span className="font-medium">End Date:</span>{" "}
+                  {formatDate(activeLineItem.endDate)}
+                </p>
+                <p>
+                  <span className="font-medium">Duration:</span>{" "}
+                  {Math.ceil(
+                    (new Date(activeLineItem.endDate).getTime() -
+                      new Date(activeLineItem.startDate).getTime()) /
+                      (1000 * 60 * 60 * 24)
+                  )}{" "}
+                  days
+                </p>
+              </div>
+            </div>
+          )}
         </div>
-      </motion.div>
-    </motion.div>
+
+        {usage ? (
+          <div className="space-y-6">
+            <h3 className="text-lg font-semibold text-amber-800">
+              Usage Metrics
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="bg-amber-50 p-4 rounded-lg">
+                <p className="text-amber-600 text-sm">Total Engine Hours</p>
+                <p className="text-2xl font-bold text-amber-800">
+                  {usage.totalEngineHours.toFixed(1)}
+                </p>
+              </div>
+              <div className="bg-amber-50 p-4 rounded-lg">
+                <p className="text-amber-600 text-sm">Idle Hours</p>
+                <p className="text-2xl font-bold text-amber-800">
+                  {usage.totalIdleHours.toFixed(1)}
+                </p>
+              </div>
+              <div className="bg-amber-50 p-4 rounded-lg">
+                <p className="text-amber-600 text-sm">Working Hours</p>
+                <p className="text-2xl font-bold text-amber-800">
+                  {usage.workingHours.toFixed(1)}
+                </p>
+              </div>
+              <div className="bg-amber-50 p-4 rounded-lg">
+                <p className="text-amber-600 text-sm">Fuel Consumed</p>
+                <p className="text-2xl font-bold text-amber-800">
+                  {usage.fuelConsumed.toFixed(1)} L
+                </p>
+              </div>
+              <div className="bg-amber-50 p-4 rounded-lg">
+                <p className="text-amber-600 text-sm">Working to Idle Ratio</p>
+                <p className="text-2xl font-bold text-amber-800">
+                  {usage.workingToIdleRatio.toFixed(1)}%
+                </p>
+              </div>
+              <div className="bg-amber-50 p-4 rounded-lg">
+                <p className="text-amber-600 text-sm">Fuel Burn Rate</p>
+                <p className="text-2xl font-bold text-amber-800">
+                  {usage.fuelBurnRate.toFixed(1)} L/h
+                </p>
+              </div>
+              <div className="bg-amber-50 p-4 rounded-lg">
+                <p className="text-amber-600 text-sm">Payload Moved</p>
+                <p className="text-2xl font-bold text-amber-800">
+                  {usage.payloadMovedTonnes.toFixed(1)} tonnes
+                </p>
+              </div>
+              <div className="bg-amber-50 p-4 rounded-lg">
+                <p className="text-amber-600 text-sm">Distance Traveled</p>
+                <p className="text-2xl font-bold text-amber-800">
+                  {usage.distanceTraveled.toFixed(1)} km
+                </p>
+              </div>
+              <div className="bg-amber-50 p-4 rounded-lg">
+                <p className="text-amber-600 text-sm">Avg Cycle Time</p>
+                <p className="text-2xl font-bold text-amber-800">
+                  {usage.avgCycleTimeSeconds.toFixed(1)}s
+                </p>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="text-center py-8 text-amber-600">
+            <p>No usage data available for this equipment.</p>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 
